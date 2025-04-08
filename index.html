@@ -839,20 +839,9 @@
                                 <div class="metric">
                                     <div class="metric-name">Kaufpreisfaktor</div>
                                 
-<!-- Erweiterte Feature-Buttons -->
-<div style="margin-top: 2rem; display: flex; gap: 10px; flex-wrap: wrap;">
-  <button onclick="generateChart()">📊 Diagramm anzeigen</button>
-  <button onclick="downloadPDF()">📄 PDF-Export</button>
-  <button onclick="downloadCSV()">📑 CSV-Export</button>
-  <button onclick="saveScenario()">💾 Szenario speichern</button>
-  <button onclick="loadScenario()">🔄 Szenario laden</button>
-</div>
-<canvas id="myChart" style="max-width: 600px; margin-top: 2rem;"></canvas>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
-// Chart.js Example
 function generateChart() {
   const ctx = document.getElementById("myChart");
   new Chart(ctx, {
@@ -873,8 +862,6 @@ function generateChart() {
     }
   });
 }
-
-// PDF-Export
 function downloadPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -885,8 +872,6 @@ function downloadPDF() {
   doc.text("Rendite: 7.5 %", 10, 50);
   doc.save("analyse.pdf");
 }
-
-// CSV-Export
 function downloadCSV() {
   const csvContent = "Kennzahl,Wert\nCashflow,3500\nKosten,1800\nMiete,12000\nRendite,7.5%";
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -896,8 +881,6 @@ function downloadCSV() {
   link.setAttribute("download", "analyse.csv");
   link.click();
 }
-
-// Speicher-/Ladefunktion
 function saveScenario() {
   const scenario = {
     cashflow: document.getElementById("monthlyCashFlowSummary")?.textContent,
@@ -906,7 +889,6 @@ function saveScenario() {
   localStorage.setItem("immobilienSzenario", JSON.stringify(scenario));
   alert("Szenario gespeichert!");
 }
-
 function loadScenario() {
   const data = localStorage.getItem("immobilienSzenario");
   if (data) {
