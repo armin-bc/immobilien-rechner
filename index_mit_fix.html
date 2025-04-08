@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Immobilien-Investment Analyse | Deutschland</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #3b5998;
+            --primary-light: #5d76b5;
+            --primary-dark: #2d4373;
+            --secondary: #6b21a8;
+            --tertiary: #0284c7;
+            --light: #f8fafc;
+            --dark: #0f172a;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --gray: #64748b;
+            --radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #e2e8f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            font-size: 1.8rem;
+        }
+        
+        main {
+            padding: 2rem 0;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .form-col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        .input-group input {
+            padding-left: 2.5rem;
+        }
+        
+        .input-group i {
+            position: absolute;
+            left: 10px;
+            top: 12px;
+            color: var(--gray);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title i {
+            background-color: var(--primary-light);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .results {
+            padding: 0;
+            overflow: hidden;
+        }
+        
+        .results-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+        
+        .results-header h2 {
+            color: white;
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .results-content {
+            padding: 1.5rem;
+        }
+        
+        .metric-group {
+            margin-bottom: 2rem;
+        }
+        
+        .metric {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .metric:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-name {
+            font-weight: 600;
+        }
+        
+        .metric-value {
+            font-weight: 700;
+        }
+        
+        .good {
+            color: var(--success);
+        }
+        
+        .average {
+            color: var(--warning);
+        }
+        
+        .poor {
+            color: var(--danger);
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .tooltip i {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-weight: normal;
+            font-size: 0.9rem;
+        }
+        
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .chart-container {
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            margin-top: 2rem;
+        }
+        
+        .disclaimer {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-top: 1rem;
+        }
+        
+        .step {
+            display: none;
+        }
+        
+        .step.active {
+            display: block;
+        }
+        
+        .step-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .summary-card {
+            background-color: #f8fafc;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .summary-title {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .summary-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .summary-description {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+        
+        .rating-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+        
+        .rating-excellent {
+            background-color: rgba(5, 150, 105, 0.1);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+        }
+        
+        .rating-good {
+            background-color: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        
+        .rating-average {
+            background-color: rgba(217, 119, 6, 0.1);
+            border: 1px solid rgba(217, 119, 6, 0.2);
+        }
+        
+        .rating-poor {
+            background-color: rgba(220, 38, 38, 0.1);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        
+        .rating-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .rating-value {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 0.5rem;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.5rem;
+        }
+        
+        .alert-info {
+            background-color: rgba(2, 132, 199, 0.1);
+            border-left: 4px solid var(--tertiary);
+            color: var(--tertiary);
+        }
+        
+        @media (max-width: 768px) {
+            .form-col {
+                flex: 100%;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1 0 50%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-building"></i>
+                <span>Deutsche Immobilien-Analyse</span>
+            </div>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <div class="card">
+                <h1>Immobilien-Investment Analyse</h1>
+                <p class="disclaimer" style="text-align: center; margin-bottom: 20px;">
+                    Dieses Tool bietet eine grundlegende Analyse für Immobilieninvestitionen in Deutschland.
+                    Die Ergebnisse sollten nicht als Steuer- oder Rechtsberatung verstanden werden.
+                </p>
+                
+                <div id="step1" class="step active">
+                    <div class="section-title">
+                        <i class="fas fa-home"></i>
+                        <h2>Immobiliendetails</h2>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="propertyType">Immobilientyp</label>
+                                <select id="propertyType">
+                                    <option value="apartment">Eigentumswohnung</option>
+                                    <option value="house">Einfamilienhaus</option>
+                                    <option value="multifamily">Mehrfamilienhaus</option>
+                                    <option value="commercial">Gewerbeimmobilie</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="location">Bundesland</label>
+                                <select id="location">
+                                    <option value="baden-wuerttemberg">Baden-Württemberg</option>
+                                    <option value="bayern">Bayern</option>
+                                    <option value="berlin">Berlin</option>
+                                    <option value="brandenburg">Brandenburg</option>
+                                    <option value="bremen">Bremen</option>
+                                    <option value="hamburg">Hamburg</option>
+                                    <option value="hessen">Hessen</option>
+                                    <option value="mecklenburg-vorpommern">Mecklenburg-Vorpommern</option>
+                                    <option value="niedersachsen">Niedersachsen</option>
+                                    <option value="nordrhein-westfalen">Nordrhein-Westfalen</option>
+                                    <option value="rheinland-pfalz">Rheinland-Pfalz</option>
+                                    <option value="saarland">Saarland</option>
+                                    <option value="sachsen">Sachsen</option>
+                                    <option value="sachsen-anhalt">Sachsen-Anhalt</option>
+                                    <option value="schleswig-holstein">Schleswig-Holstein</option>
+                                    <option value="thueringen">Thüringen</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="purchasePrice">Kaufpreis (€)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="purchasePrice" placeholder="z.B. 250000" value="250000">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="size">Wohnfläche (m²)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-ruler-combined"></i>
+                                    <input type="number" id="size" placeholder="z.B. 80" value="80">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="constructionYear">Baujahr</label>
+                                <div class="input-group">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <input type="number" id="constructionYear" placeholder="z.B. 1995" value="2000">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="condition">Zustand</label>
+                                <select id="condition">
+                                    <option value="very-good">Sehr gut</option>
+                                    <option value="good" selected>Gut</option>
+                                    <option value="needs-renovation">Renovierungsbedürftig</option>
+                                    <option value="needs-modernization">Modernisierungsbedürftig</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-buttons">
+                        <div></div>
+                        <button class="btn btn-primary" id="toStep2">Weiter <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="step2" class="step">
+                    <div class="section-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h2>Finanzierung & Kosten</h2>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="downPayment">Eigenkapital (€)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="downPayment" placeholder="z.B. 50000" value="50000">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="additionalCosts">Kaufnebenkosten (%)
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Grunderwerbsteuer, Notar, Grundbuchamt, Makler</span>
+                                    </span>
+                                </label>
+                                <div class="input-group">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="additionalCosts" value="13" step="0.1" placeholder="z.B. 13">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="interestRate">Zinssatz (%)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="interestRate" step="0.01" placeholder="z.B. 3.5" value="3.5">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="amortizationRate">Tilgungssatz (%)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="amortizationRate" value="2" step="0.1" placeholder="z.B. 2">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="fixedInterestPeriod">Zinsbindung (Jahre)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="number" id="fixedInterestPeriod" value="10" placeholder="z.B. 10">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="monthlyRent">Monatliche Kaltmiete (€)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="monthlyRent" placeholder="z.B. 1000" value="1000">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-buttons">
+                        <button class="btn btn-primary" id="toStep1"><i class="fas fa-arrow-left"></i> Zurück</button>
+                        <button class="btn btn-primary" id="toStep3">Weiter <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                </div>
+                
+                <div id="step3" class="step">
+                    <div class="section-title">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                        <h2>Betriebskosten & Steuer</h2>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="groundTax">Grundsteuer (€/Jahr)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="groundTax" placeholder="z.B. 300" value="300">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="insurance">Versicherung (€/Jahr)</label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="insurance" placeholder="z.B. 400" value="400">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="maintenance">Instandhaltungsrücklage (€/m²/Jahr)
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Empfohlen: 7-12€/m²/Jahr je nach Alter und Zustand</span>
+                                    </span>
+                                </label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="maintenance" value="9" step="0.5" placeholder="z.B. 9">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="managementCosts">Verwaltungskosten (€/Jahr)
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Bei Selbstverwaltung entsprechend anpassen</span>
+                                    </span>
+                                </label>
+                                <div class="input-group">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <input type="number" id="managementCosts" placeholder="z.B. 500" value="500">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="vacancyRate">Leerstandsquote (%)
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Empfohlen: 3-5% als Puffer</span>
+                                    </span>
+                                </label>
+                                <div class="input-group">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="vacancyRate" value="3" step="0.5" placeholder="z.B. 3">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-col">
+                            <div class="form-group">
+                                <label for="personalTaxRate">Persönlicher Steuersatz (%)
+                                    <span class="tooltip">
+                                        <i class="fas fa-info-circle"></i>
+                                        <span class="tooltip-text">Ihr persönlicher Einkommensteuersatz</span>
+                                    </span>
+                                </label>
+                                <div class="input-group">
+                                    <i class="fas fa-percent"></i>
+                                    <input type="number" id="personalTaxRate" value="42" step="1" placeholder="z.B. 42">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="step-buttons">
+                        <button class="btn btn-primary" id="toStep2"><i class="fas fa-arrow-left"></i> Zurück</button>
+                        <button class="btn btn-primary" id="calculateBtn">Analyse starten <i class="fas fa-calculator"></i></button>
+                    </div>
+                </div>
+                
+                <div id="results" class="results hidden">
+                    <div class="results-header">
+                        <h2>Investitionsanalyse</h2>
+                    </div>
+                    
+                    <div class="results-content">
+                        <div class="tabs">
+                            <div class="tab active" data-tab="overview">Übersicht</div>
+                            <div class="tab" data-tab="financial">Finanzierung</div>
+                            <div class="tab" data-tab="tax">Steuerliche Aspekte</div>
+                            <div class="tab" data-tab="longterm">Langfristige Rendite</div>
+                        </div>
+                        
+                        <div id="overview" class="tab-content active">
+                            <div class="rating-card" id="overallRatingCard">
+                                <div class="rating-title">Gesamtbewertung</div>
+                                <div class="rating-value" id="overallRating">-</div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-col">
+                                    <div class="summary-card">
+                                        <div class="summary-title">Monatlicher Cashflow</div>
+                                        <div class="summary-value" id="monthlyCashFlowSummary">-</div>
+                                        <div class="summary-description">Nach allen Kosten und vor Steuern</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-col">
+                                    <div class="summary-card">
+                                        <div class="summary-title">Eigenkapitalrendite</div>
+                                        <div class="summary-value" id="cashOnCashSummary">-</div>
+                                        <div class="summary-description">Jährlicher Cashflow ÷ Eigenkapital</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-group">
+                                <h3>Wichtige Kennzahlen</h3>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Kaufpreis pro m²</div>
+                                    <div class="metric-value" id="pricePerSqm">-</div>
+                                </div>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Mietrendite (Brutto)</div>
+                                    <div class="metric-value" id="grossRentalYield">-</div>
+                                </div>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Mietrendite (Netto)</div>
+                                    <div class="metric-value" id="netRentalYield">-</div>
+                                </div>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Kapitalrendite</div>
+                                    <div class="metric-value" id="capRate">-</div>
+                                </div>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Eigenkapitalrendite</div>
+                                    <div class="metric-value" id="cashOnCash">-</div>
+                                </div>
+                                
+                                <div class="metric">
+                                    <div class="metric-name">Kaufpreisfaktor</div>
+                                
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+function generateChart() {
+  const ctx = document.getElementById("myChart");
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Cashflow", "Kosten", "Miete", "Rendite"],
+      datasets: [{
+        label: "Jährlich (€)",
+        data: [3500, 1800, 12000, 7.5],
+        backgroundColor: ["#16a34a", "#f97316", "#3b82f6", "#9333ea"]
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      }
+    }
+  });
+}
+function downloadPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("Immobilienanalyse - Zusammenfassung", 10, 10);
+  doc.text("Cashflow: 3500 €", 10, 20);
+  doc.text("Kosten: 1800 €", 10, 30);
+  doc.text("Miete: 12000 €", 10, 40);
+  doc.text("Rendite: 7.5 %", 10, 50);
+  doc.save("analyse.pdf");
+}
+function downloadCSV() {
+  const csvContent = "Kennzahl,Wert\nCashflow,3500\nKosten,1800\nMiete,12000\nRendite,7.5%";
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "analyse.csv");
+  link.click();
+}
+function saveScenario() {
+  const scenario = {
+    cashflow: document.getElementById("monthlyCashFlowSummary")?.textContent,
+    rendite: document.getElementById("cashOnCashSummary")?.textContent
+  };
+  localStorage.setItem("immobilienSzenario", JSON.stringify(scenario));
+  alert("Szenario gespeichert!");
+}
+function loadScenario() {
+  const data = localStorage.getItem("immobilienSzenario");
+  if (data) {
+    const parsed = JSON.parse(data);
+    alert("Gespeichertes Szenario:\nCashflow: " + parsed.cashflow + "\nRendite: " + parsed.rendite);
+  } else {
+    alert("Kein Szenario gefunden.");
+  }
+}
+</script>
